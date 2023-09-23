@@ -10,7 +10,7 @@ class ModeToolsScreen extends ConsumerWidget {
   });
 
   void navigateToEditScreen(BuildContext context) {
-    Routemaster.of(context).push('/edit-community/$name');
+    Routemaster.of(context).push('/edit-community/${name}');
   }
 
   @override

@@ -76,36 +76,4 @@ class CommunityController extends StateNotifier<bool> {
   Stream<CommunityModel> getCommunityByName(String name) {
     return _communityRepository.getCommunityByName(name);
   }
-
-  void editCommunity({
-    required File? profileFile,
-    required File? bannerFile,
-    required BuildContext context,
-    required CommunityModel communityModel,
-  }) async {
-    state = true;
-    if (profileFile != null) {
-      final res = await _storageRepository.storeFile(
-        path: 'communities/profile',
-        id: communityModel.name,
-        file: profileFile,
-      );
-      res.fold((l) => showSnackBar(context, l.message),
-          (r) => communityModel = communityModel.copyWith(avatar: r));
-    }
-    if (bannerFile != null) {
-      final res = await _storageRepository.storeFile(
-        path: 'communities/banner',
-        id: communityModel.name,
-        file: bannerFile,
-      );
-      res.fold((l) => showSnackBar(context, l.message),
-          (r) => communityModel = communityModel.copyWith(banner: r));
-    }
-
-    final res = await _communityRepository.editCommunity(communityModel);
-    state = false;
-    res.fold((l) => showSnackBar(context, l.message),
-        (r) => Routemaster.of(context).pop());
-  }
 }
