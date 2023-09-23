@@ -25,7 +25,8 @@ class StorageRepository {
 
       final snapshot = await uploadTask;
 
-      return right(await snapshot.ref.getDownloadURL());
+      return right(
+          await snapshot.ref.getDownloadURL()); //download url을 return해준다.
     } catch (e) {
       return left(Failure(e.toString()));
     }
