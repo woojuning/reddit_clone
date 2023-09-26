@@ -39,8 +39,10 @@ class CommunityRepository {
         .map((event) {
       List<CommunityModel> communties = [];
       for (var doc in event.docs) {
-        communties
-            .add(CommunityModel.fromMap(doc.data() as Map<String, dynamic>));
+        if (doc.data() != null) {
+          communties
+              .add(CommunityModel.fromMap(doc.data() as Map<String, dynamic>));
+        }
       }
       return communties;
     });
@@ -49,6 +51,19 @@ class CommunityRepository {
   Stream<CommunityModel> getCommunityByName(String name) {
     return _communities.doc(name).snapshots().map((event) =>
         CommunityModel.fromMap(event.data() as Map<String, dynamic>));
+  }
+
+  FutureEithervoid editCommunity(CommunityModel communityModel) async {
+    try {
+      await _communities
+          .doc(communityModel.name)
+          .update(communityModel.toMap());
+      return right(null);
+    } on FirebaseException catch (e) {
+      throw e.message.toString();
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 
   CollectionReference get _communities =>

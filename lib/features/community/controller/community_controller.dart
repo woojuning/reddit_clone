@@ -68,6 +68,38 @@ class CommunityController extends StateNotifier<bool> {
     );
   }
 
+  void editCommunity(CommunityModel communityModel, File? profileFile,
+      File? bannerFile) async {
+    //1. profileDownLoadPath를 storage로 부터 얻는다.
+    state = true;
+    if (profileFile != null) {
+      final res = await _storageRepository.storeFile(
+          path: 'communities/profile/',
+          id: communityModel.name,
+          file: profileFile);
+      res.fold((l) => null, (downLoadPath) {
+        communityModel = communityModel.copyWith(avatar: downLoadPath);
+      });
+    }
+    //2. bannerDownLoadPath또한 얻는다.
+    if (bannerFile != null) {
+      final res = await _storageRepository.storeFile(
+          path: 'communities/banner/',
+          id: communityModel.name,
+          file: bannerFile);
+      res.fold((l) => null, (downLoadPath) {
+        communityModel = communityModel.copyWith(banner: downLoadPath);
+      });
+    }
+    state = false;
+    //4. communityRepository의 매개변수로 넘겨서 업데이트한다. 그 결과값을 처리한다.
+    final res = await _communityRepository.editCommunity(communityModel);
+
+    res.fold((l) => null, (r) => null);
+
+    //3. 받아온 communityModel의 avatar와 banner의 값을 변경한다.
+  }
+
   Stream<List<CommunityModel>> getUserCommunities() {
     final uid = _ref.read(userProvider)!.uid;
     return _communityRepository.getUserCommunities(uid);

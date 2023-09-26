@@ -7,10 +7,10 @@ void showSnackBar(BuildContext context, String text) {
     ..showSnackBar(SnackBar(content: Text(text)));
 }
 
-//이미지 선택
 Future<FilePickerResult?> pickImage() async {
   final image = await FilePicker.platform.pickFiles(type: FileType.image);
   return image;
-}
+} 
+
 
 //utils를 만들어서 공용으로 사용하는 메서드를 만들어 놓는것 같은데 ㅎㅎ
